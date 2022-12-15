@@ -1,9 +1,8 @@
 CREATE TABLE IF NOT EXISTS product (
-    id bigint NOT NULL,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NULL,
     price FLOAT NOT NULL,
     discount BOOLEAN NOT NULL,
-    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS discount_card (
