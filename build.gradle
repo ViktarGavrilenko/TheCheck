@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "3.3"
+    id 'application'
 }
 
 group 'org.example'
@@ -24,4 +25,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+application {
+    mainClass = 'java.CheckRunner'
 }
