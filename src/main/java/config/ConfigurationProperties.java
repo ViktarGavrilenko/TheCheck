@@ -15,9 +15,7 @@ public class ConfigurationProperties {
         if (properties == null || !file.equals(fileName)) {
             file = fileName;
             properties = new Properties();
-            FileInputStream fis;
-            try {
-                fis = new FileInputStream("src/main/resources/" + fileName);
+            try (FileInputStream fis = new FileInputStream("src/main/resources/" + fileName)) {
                 properties.load(fis);
             } catch (IOException e) {
                 LOG.error("The file " + fileName + " is missing");

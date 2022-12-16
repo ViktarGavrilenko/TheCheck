@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.Properties;
 
 public class PostgresSqlUtils {
-    private static final Logger LOG = Logger.getLogger(ConfigurationProperties.class);
+    private static final Logger LOG = Logger.getLogger(PostgresSqlUtils.class);
 
     protected static final Properties configProperties =
             ConfigurationProperties.createProperties("application.properties");
@@ -28,24 +28,12 @@ public class PostgresSqlUtils {
         } else {
             String connectionString = String.format("jdbc:postgresql://%s:%s/%s", DB_HOST, DB_PORT, DB_NAME);
             try {
-                Class.forName("org.postgresql.Driver");
                 connection = DriverManager.getConnection(connectionString, DB_USER, DB_PASS);
                 return connection;
-            } catch (ClassNotFoundException | SQLException e) {
+            } catch (SQLException e) {
                 LOG.error(CONNECTION_FAILED + e);
                 throw new IllegalArgumentException(CONNECTION_FAILED, e);
             }
-        }
-    }
-
-    public static void sendSqlQuery(String sqlQuery) {
-        Connection connection = getDbConnection();
-        Statement statement;
-        try {
-            statement = connection.createStatement();
-            statement.executeUpdate(sqlQuery);
-        } catch (SQLException e) {
-            LOG.error(SQL_QUERY_FAILED + e);
         }
     }
 

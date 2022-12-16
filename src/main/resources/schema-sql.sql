@@ -10,3 +10,7 @@ CREATE TABLE IF NOT EXISTS discount_card (
     percent SMALLSERIAL NOT NULL,
     PRIMARY KEY (number)
 );
+
+CREATE TABLE IF NOT EXISTS promotional_item (
+    promotional_item_id SERIAL PRIMARY KEY
+);

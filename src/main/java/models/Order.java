@@ -1,30 +1,25 @@
 package models;
 
 public class Order {
-    private Product product;
+    private Item item;
     private Long quantity;
 
     public Order() {
     }
 
-    public Order(Product product, Long quantity) {
-        this.product = product;
+    public Order(Item item, Long quantity) {
+        this.item = item;
         this.quantity = quantity;
     }
-
-    public Product getProduct() {
-        return product;
+    public Item getItem() {
+        return item;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(Long quantity) {
-        this.quantity = quantity;
     }
 }

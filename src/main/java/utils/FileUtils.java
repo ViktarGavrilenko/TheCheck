@@ -1,6 +1,5 @@
 package utils;
 
-import config.ConfigurationProperties;
 import org.apache.log4j.Logger;
 
 import java.io.FileWriter;

@@ -1,5 +1,7 @@
 package utils;
 
+import static utils.Alignment.START;
+
 public class StringUtils {
     public static String getStringGivenLength(String str, int length, Alignment alignment) {
         int lengthStr = str.length();
@@ -9,21 +11,20 @@ public class StringUtils {
             str = str.substring(0, length);
         }
         String repeat = " ".repeat(Math.max(0, length - lengthStr));
-        switch (alignment) {
-            case START -> {
-                outStr.append(str);
-                outStr.append(repeat);
-            }
-            case END -> {
-                outStr.append(repeat);
-                outStr.append(str);
-            }
+
+        if (alignment.equals(START)) {
+            outStr.append(str);
+            outStr.append(repeat);
+        } else {
+            outStr.append(repeat);
+            outStr.append(str);
         }
+
         return String.valueOf(outStr);
     }
 
-    public static String getStringGivenLength(String firstStr, String endStr, int length){
+    public static String getStringGivenLength(String firstStr, String endStr, int length) {
         String repeat = " ".repeat(Math.max(0, length - firstStr.length() - endStr.length()));
-        return firstStr + repeat +endStr;
+        return firstStr + repeat + endStr;
     }
 }

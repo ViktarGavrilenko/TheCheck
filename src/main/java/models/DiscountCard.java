@@ -9,6 +9,7 @@ public class DiscountCard {
     }
 
     public DiscountCard() {
+        this.percent = 0;
     }
 
     public String getNumber() {
