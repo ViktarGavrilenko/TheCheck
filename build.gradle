@@ -10,11 +10,6 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
-compileJava.options.encoding = 'UTF-8'
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
@@ -23,9 +18,24 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.5.1'
 }
 
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
 test {
     useJUnitPlatform()
 }
-application {
-    mainClass = 'java.CheckRunner'
+/*application {
+    mainClassName = 'CheckRunner'
+}*/
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'Main-Class': 'CheckRunner'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
