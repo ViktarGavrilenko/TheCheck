@@ -28,9 +28,10 @@ public class PostgresSqlUtils {
         } else {
             String connectionString = String.format("jdbc:postgresql://%s:%s/%s", DB_HOST, DB_PORT, DB_NAME);
             try {
+                Class.forName("org.postgresql.Driver");
                 connection = DriverManager.getConnection(connectionString, DB_USER, DB_PASS);
                 return connection;
-            } catch (SQLException e) {
+            } catch (SQLException | ClassNotFoundException e) {
                 LOG.error(CONNECTION_FAILED + e);
                 throw new IllegalArgumentException(CONNECTION_FAILED, e);
             }

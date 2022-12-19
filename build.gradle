@@ -23,15 +23,16 @@ compileJava.options.encoding = 'UTF-8'
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
+
 test {
     useJUnitPlatform()
 }
-/*application {
-    mainClassName = 'CheckRunner'
-}*/
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archivesBaseName = 'CheckRunner'
+    archiveVersion.set('')
+
     manifest {
         attributes 'Main-Class': 'CheckRunner'
     }

@@ -2,8 +2,8 @@ package config;
 
 import org.apache.log4j.Logger;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class ConfigurationProperties {
@@ -15,7 +15,7 @@ public class ConfigurationProperties {
         if (properties == null || !file.equals(fileName)) {
             file = fileName;
             properties = new Properties();
-            try (FileInputStream fis = new FileInputStream("src/main/resources/" + fileName)) {
+            try (InputStream fis = ConfigurationProperties.class.getClassLoader().getResourceAsStream(fileName)) {
                 properties.load(fis);
             } catch (IOException e) {
                 LOG.error("The file " + fileName + " is missing");
