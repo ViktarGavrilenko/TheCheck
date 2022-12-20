@@ -34,7 +34,7 @@ public class Promotion {
         return false;
     }
 
-    public static Item getPromotionPrice(Item item) {
+    public static Item getPromotionItem(Item item) {
         for (Long promotionalItem : LIST_PROMOTIONAL_ITEM) {
             if (item.getId() == promotionalItem) {
                 return new PromotionalItem(item, PROMOTION_PERCENTAGE);

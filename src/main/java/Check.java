@@ -1,11 +1,10 @@
 import config.ConfigurationProperties;
-import models.DiscountCard;
 import models.Order;
 import models.SimpleItem;
 import org.apache.log4j.Logger;
 import utils.Alignment;
+import utils.StringUtils;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,11 +14,11 @@ import java.util.Properties;
 
 import static dao.ProductDao.getProductById;
 import static dao.ProductDao.isProductWithId;
-import static discountconditions.DiscCard.getDiscountPrice;
+import static discountconditions.DiscCard.getDiscountItem;
 import static discountconditions.DiscCard.getMaxDiscount;
-import static discountconditions.Promotion.getPromotionPrice;
+import static discountconditions.Promotion.getPromotionItem;
 import static discountconditions.Promotion.isQuantityPromotionItemEnough;
-import static utils.ArithmeticUtils.roundingNumber;
+import static utils.ArithmeticUtils.*;
 import static utils.FileUtils.*;
 import static utils.StringUtils.getStringGivenLength;
 
@@ -45,18 +44,14 @@ public class Check {
     private final List<String> discountCards = new ArrayList<>();
     private int discountPercentage = 0;
 
-    public void getCheck(String inputStr) {
+    public void generateCheck(String inputStr) {
         createListProductAndDiscountCardFromStr(inputStr);
-        DiscountCard maxDiscountCard = getMaxDiscount(discountCards);
-        discountPercentage = maxDiscountCard.getPercent();
-        File folder = new File(PATH_RECEIPT);
-        if (!folder.exists()) {
-            folder.mkdir();
-        }
+        discountPercentage = getMaxDiscount(discountCards);
+        createDir(PATH_RECEIPT);
 
         int receiptNumber = getReceiptNumber();
         writeLastNumberInFile(receiptNumber, PATH_RECEIPT + SLASH + FILE_WITH_LAST_RECEIPT);
-        String pathReceipt = folder + SLASH + receiptNumber;
+        String pathReceipt = PATH_RECEIPT + SLASH + receiptNumber;
 
         try (FileWriter writer = new FileWriter(pathReceipt, false)) {
             writer.write(String.valueOf(getHeaderReceipt(String.valueOf(receiptNumber))));
@@ -73,10 +68,10 @@ public class Check {
         String[] items = inputStr.split(" ");
         for (String s : items) {
             String[] item = s.split("-");
-            if (item[0].equals(KEYWORD_FOR_DISCOUNT_CARD)) {
+            if (item[0].toLowerCase().equals(KEYWORD_FOR_DISCOUNT_CARD)) {
                 discountCards.add(item[1]);
             } else {
-                if (isProductWithId(Integer.parseInt(item[0]))) {
+                if (isInteger(item[0]) && isLong(item[1]) && isProductWithId(Integer.parseInt(item[0]))) {
                     SimpleItem simpleProduct = getProductById(Integer.parseInt(item[0]));
                     Order order = new Order(simpleProduct, Long.parseLong(item[1]));
                     listOrder.add(order);
@@ -98,11 +93,11 @@ public class Check {
         headerReceipt.append("\n");
         headerReceipt.append("_".repeat(Math.max(0, STR_LENGTH)));
         headerReceipt.append("\n");
-        headerReceipt.append(getStringGivenLength("QTY", QTY_LENGTH, Alignment.START));
-        headerReceipt.append(getStringGivenLength("DESCRIPTION", DESCRIPTION_LENGTH, Alignment.END));
-        headerReceipt.append(getStringGivenLength("PRICE", PRICE_LENGTH, Alignment.END));
-        headerReceipt.append(getStringGivenLength("TOTAL", TOTAL_LENGTH, Alignment.END));
-        headerReceipt.append(getStringGivenLength("DISC", DISC_LENGTH, Alignment.END));
+        headerReceipt.append(StringUtils.getStringGivenLengthWithAlignment("QTY", QTY_LENGTH, Alignment.START));
+        headerReceipt.append(StringUtils.getStringGivenLengthWithAlignment("DESCRIPTION", DESCRIPTION_LENGTH, Alignment.END));
+        headerReceipt.append(StringUtils.getStringGivenLengthWithAlignment("PRICE", PRICE_LENGTH, Alignment.END));
+        headerReceipt.append(StringUtils.getStringGivenLengthWithAlignment("TOTAL", TOTAL_LENGTH, Alignment.END));
+        headerReceipt.append(StringUtils.getStringGivenLengthWithAlignment("DISC", DISC_LENGTH, Alignment.END));
         headerReceipt.append("\n");
         return headerReceipt;
     }
@@ -115,22 +110,22 @@ public class Check {
         for (Order order : listOrder) {
             Double price = order.getItem().getPrice();
             Long qty = order.getQuantity();
-            receipt.append(getStringGivenLength(String.valueOf(qty), QTY_LENGTH, Alignment.START));
-            receipt.append(getStringGivenLength(
+            receipt.append(StringUtils.getStringGivenLengthWithAlignment(String.valueOf(qty), QTY_LENGTH, Alignment.START));
+            receipt.append(StringUtils.getStringGivenLengthWithAlignment(
                     String.valueOf(order.getItem().getName()), DESCRIPTION_LENGTH, Alignment.END));
-            receipt.append(getStringGivenLength(String.valueOf(price), PRICE_LENGTH, Alignment.END));
-            receipt.append(getStringGivenLength(
+            receipt.append(StringUtils.getStringGivenLengthWithAlignment(String.valueOf(price), PRICE_LENGTH, Alignment.END));
+            receipt.append(StringUtils.getStringGivenLengthWithAlignment(
                     String.valueOf(roundingNumber((price * qty), 2)), TOTAL_LENGTH, Alignment.END));
 
             if (isQtyPromotionEnough) {
-                order.setItem(getPromotionPrice(order.getItem()));
+                order.setItem(getPromotionItem(order.getItem()));
             }
 
             if (!discountCards.isEmpty()) {
-                order.setItem(getDiscountPrice(order.getItem(), discountPercentage));
+                order.setItem(getDiscountItem(order.getItem(), discountPercentage));
             }
 
-            receipt.append(getStringGivenLength(String.valueOf(roundingNumber(
+            receipt.append(StringUtils.getStringGivenLengthWithAlignment(String.valueOf(roundingNumber(
                     order.getItem().getPrice() * qty, 2)), DISC_LENGTH, Alignment.END));
             totalDiscount = totalDiscount + order.getItem().getPrice() * qty;
 

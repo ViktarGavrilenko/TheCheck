@@ -3,7 +3,7 @@ package utils;
 import static utils.Alignment.START;
 
 public class StringUtils {
-    public static String getStringGivenLength(String str, int length, Alignment alignment) {
+    public static String getStringGivenLengthWithAlignment(String str, int length, Alignment alignment) {
         int lengthStr = str.length();
         StringBuilder outStr = new StringBuilder();
         if (lengthStr > length) {

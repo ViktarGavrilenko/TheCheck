@@ -7,6 +7,6 @@ public class CheckRunner {
         BasicConfigurator.configure();
         Check check = new Check();
         Scanner in = new Scanner(System.in);
-        check.getCheck(in.nextLine());
+        check.generateCheck(in.nextLine());
     }
 }
