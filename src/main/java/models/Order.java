@@ -4,9 +4,6 @@ public class Order {
     private Item item;
     private Long quantity;
 
-    public Order() {
-    }
-
     public Order(Item item, Long quantity) {
         this.item = item;
         this.quantity = quantity;
